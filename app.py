@@ -7,7 +7,7 @@ app = Flask(__name__, template_folder="templates")
 
 RADNO_VRIJEME = {
     "ponedjeljak-petak": {"start": 10, "end": 20},
-    "subota": {"start": 10, "end": 13},
+    "utorak": {"start": 10, "end": 13},
     "nedjelja": None
 }
 
