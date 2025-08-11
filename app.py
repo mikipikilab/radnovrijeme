@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 from datetime import datetime
-from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
+from zoneinfo import ZoneInfo
 import json, os
 
 app = Flask(__name__, template_folder="templates")
@@ -20,15 +20,13 @@ def now_podgorica():
     try:
         return datetime.now(ZoneInfo("Europe/Podgorica"))
     except Exception:
-        return datetime.now()  # fallback da ne padne app ako nema tzdata
+        return datetime.now()  # fallback ako nema tzdata
 
 def ucitaj_posebne_datume():
     try:
         with open(DATA_FILE, "r", encoding="utf-8") as f:
             return json.load(f)
-    except FileNotFoundError:
-        return {}
-    except json.JSONDecodeError:
+    except (FileNotFoundError, json.JSONDecodeError):
         return {}
 
 def sacuvaj_posebne_datume(data):
@@ -43,7 +41,7 @@ def to_int_or_none(x):
 
 def sat_label(h):
     try:
-        return str(int(h))
+        return str(int(h))  # npr. 10 -> "10"
     except Exception:
         return str(h)
 
@@ -64,7 +62,7 @@ def index():
     else:
         start, end = None, None  # nedjelja
 
-    # posebni datum prepisuje default
+    # posebni datum (ako postoji) prepisuje default; dozvoli [None, None] = neradni
     posebni = ucitaj_posebne_datume()
     datum_str = sada.strftime("%Y-%m-%d")
     ps = posebni.get(datum_str)
@@ -72,14 +70,13 @@ def index():
         start = ps[0] if ps[0] is not None else None
         end   = ps[1] if ps[1] is not None else None
 
-  # poruka sa "časova" i <br> za novi red
-       # poruke: HTML za prikaz (sa <br>) i čisti tekst za TTS (bez tagova)
+    # poruke: HTML (sa <br>) za prikaz i čisti tekst za TTS
     if start is None or end is None:
         poruka_html = "Danas je neradni dan."
         poruka_tts  = "Danas ne radimo."
     else:
-        otv = (start <= sat < end)
-        if otv:
+        otvoreno_sad = (start <= sat < end)
+        if otvoreno_sad:
             linije = [
                 "Ordinacija je trenutno otvorena.",
                 f"Danas je radno vrijeme od {sat_label(start)} do {sat_label(end)} časova."
@@ -90,7 +87,7 @@ def index():
                 f"Danas je radno vrijeme od {sat_label(start)} do {sat_label(end)} časova."
             ]
         poruka_html = "<br>".join(linije)
-        poruka_tts  = " ".join(linije)  # bez <br>, pa TTS lijepo pauzira na tački
+        poruka_tts  = " ".join(linije)  # bez <br>, TTS lijepo pauzira na tačkama
 
     poruka_upper = poruka_html.upper()
 
@@ -101,19 +98,18 @@ def index():
         poruka_tts=poruka_tts
     )
 
-
 @app.route("/admin", methods=["GET", "POST"])
 def admin():
     posebni = ucitaj_posebne_datume()
     if request.method == "POST":
         datum = request.form["datum"].strip()
         if "neradni" in request.form:
-            start, end = None, None
+            start = end = None
         else:
             start = to_int_or_none(request.form.get("start"))
             end   = to_int_or_none(request.form.get("end"))
             if start is None or end is None:
-                start = end = None  # ako je nešto prazno/neispravno, tretiraj kao neradni
+                start = end = None  # prazno/neispravno -> neradni
         posebni[datum] = [start, end]
         sacuvaj_posebne_datume(posebni)
         return redirect(url_for("admin"))
