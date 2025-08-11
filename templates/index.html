@@ -15,23 +15,22 @@
     background-color: #f9fafb;
     color: #111827;
   }
-  h1 { font-size: 1.75rem; margin: 0 0 8px; color: #111827; }
-  .sub { color: #4b5563; margin-bottom: 18px; }
-  .box {
-    background: #ffffff;
+  h1 { font-size: 1.9rem; margin: 0 0 8px; color: #111827; letter-spacing: .3px; }
+  .sub { color: #4b5563; margin-bottom: 18px; line-height: 1.4; }
+  .meta {
+    display: inline-flex;
+    gap: 14px;
+    align-items: center;
+    background: #fff;
     border: 1px solid #e5e7eb;
-    padding: 16px 18px;
-    border-radius: 14px;
-    display: inline-block;
-    text-align: left;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    border-radius: 12px;
+    padding: 10px 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,.06);
     margin-bottom: 16px;
-    min-width: 360px;
+    font-size: 1.02rem;
   }
-  .row { display: flex; gap: 10px; align-items: center; margin: 6px 0; }
-  .row b { width: 92px; color: #374151; }
-  .value { font-size: 1.05rem; }
-  .actions { margin-top: 10px; }
+  .meta b { color:#374151; }
+  .actions { margin-top: 12px; }
   button {
     padding: 9px 16px;
     border-radius: 10px;
@@ -45,20 +44,18 @@
   a:hover { text-decoration: underline; }
 </style>
 <script>
-function formatVrijeme(h, m) {
-  return `${h}:${(m<10?'0':'')+m}`;
-}
+function pad2(n){ return n<10 ? "0"+n : ""+n; }
 
 function azurirajVreme() {
   const d = new Date();
   const dan = d.getDate();
   const mjesec = d.getMonth() + 1;
   const godina = d.getFullYear().toString().slice(-2);
-  const dani = [
-    'Nedjelja','Ponedjeljak','Utorak','Srijeda','Četvrtak','Petak','Subota'
-  ];
-  document.getElementById('datum').innerText = `${dan}.${mjesec}.${godina}. ${dani[d.getDay()]}`;
-  document.getElementById('vreme').innerText = formatVrijeme(d.getHours(), d.getMinutes());
+  const dani = ['Nedjelja','Ponedjeljak','Utorak','Srijeda','Četvrtak','Petak','Subota'];
+
+  document.getElementById('datum').textContent = `${dan}.${mjesec}.${godina}.`;
+  document.getElementById('dan').textContent = dani[d.getDay()];
+  document.getElementById('vreme').textContent = `${d.getHours()}:${pad2(d.getMinutes())}`;
 }
 
 function speakMessage() {
@@ -75,10 +72,8 @@ function speakMessage() {
 
 window.addEventListener("load", function () {
   azurirajVreme();
-  setInterval(azurirajVreme, 1000);
-
+  setInterval(azurirajVreme, 30000); // nema sekundi, osvježi na 30s
   speakMessage();
-
   document.body.addEventListener("click", function handler() {
     speakMessage();
     document.body.removeEventListener("click", handler);
@@ -87,17 +82,21 @@ window.addEventListener("load", function () {
 </script>
 </head>
 <body>
-<h1>{{ poruka_upper|safe }}</h1>
-<div class="sub">{{ poruka|safe }}</div>
 
+  <div class="meta">
+    <div><b>Datum:</b> <span id="datum"></span></div>
+    <div><b>Dan:</b> <span id="dan"></span></div>
+    <div><b>Vrijeme:</b> <span id="vreme"></span></div>
+  </div>
 
+  <h1>{{ poruka_upper|safe }}</h1>
+  <div class="sub">{{ poruka|safe }}</div>
 
-  
+  <div class="actions">
+    <a href="/admin">Admin</a>
+    &nbsp;•&nbsp;
+    <button onclick="speakMessage()">🔊 Pusti glas</button>
+  </div>
 
-    <div class="actions">
-      <a href="/admin">Admin</a>
-      &nbsp;•&nbsp;
-      <button onclick="speakMessage()">🔊 Pusti glas</button>
-    </div>
 </body>
 </html>
