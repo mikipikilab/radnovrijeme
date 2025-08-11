@@ -5,10 +5,52 @@
 <title>Radno vrijeme ordinacije</title>
 <script src="https://code.responsivevoice.org/responsivevoice.js?key=J55NcMXq"></script>
 <style>
-  body { font-family: system-ui, Arial, sans-serif; padding: 24px; max-width: 640px; margin: auto; }
-  h2 { margin-bottom: 8px; }
-  .box { background: #f7f7f9; border: 1px solid #e5e7eb; padding: 16px; border-radius: 12px; }
-  button { padding: 8px 12px; border-radius: 10px; border: 1px solid #e5e7eb; background: white; cursor: pointer; }
+  body {
+    font-family: system-ui, Arial, sans-serif;
+    padding: 24px;
+    max-width: 640px;
+    margin: auto;
+    text-align: center;
+    background-color: #f9fafb;
+    color: #111827;
+  }
+  h2 {
+    margin-bottom: 16px;
+    font-size: 1.6rem;
+    color: #1f2937;
+  }
+  .box {
+    background: white;
+    border: 1px solid #e5e7eb;
+    padding: 16px;
+    border-radius: 12px;
+    display: inline-block;
+    text-align: left;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    margin-bottom: 16px;
+  }
+  .box p {
+    margin: 6px 0;
+    font-size: 1.1rem;
+  }
+  button {
+    padding: 8px 16px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    background: #f3f4f6;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  button:hover {
+    background: #e5e7eb;
+  }
+  a {
+    color: #2563eb;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
 </style>
 <script>
 function azurirajVreme() {
@@ -25,7 +67,15 @@ function azurirajVreme() {
   document.getElementById('vreme').innerText =
     `${sati}:${(minuti < 10 ? '0' : '') + minuti}:${(sekunde < 10 ? '0' : '') + sekunde}`;
 
-  var dani = ['ned', 'pon', 'uto', 'sri', 'čet', 'pet', 'sub'];
+  var dani = [
+    'Nedjelja',
+    'Ponedjeljak',
+    'Utorak',
+    'Srijeda',
+    'Četvrtak',
+    'Petak',
+    'Subota'
+  ];
   document.getElementById('dan').innerText = dani[danasnjiDatum.getDay()];
 }
 
@@ -41,34 +91,30 @@ function speakMessage() {
   }
 }
 
-// Kad se stranica učita
 window.addEventListener("load", function () {
   azurirajVreme();
   setInterval(azurirajVreme, 1000);
-
-  // Pokušaj odmah
   speakMessage();
 
-  // Ako je browser blokirao, pusti na prvi klik
+  // Ako je browser blokirao autoplay, pusti na prvi klik
   document.body.addEventListener("click", function handler() {
     speakMessage();
     document.body.removeEventListener("click", handler);
   });
 });
 </script>
-
 </head>
 <body>
     <h2>{{ poruka }}</h2>
     <div class="box">
-        <p>Datum: <span id="datum"></span></p>
-        <p>Dan: <span id="dan"></span></p>
-        <p>Vrijeme: <span id="vreme"></span></p>
+        <p><strong>Datum:</strong> <span id="datum"></span></p>
+        <p><strong>Dan:</strong> <span id="dan"></span></p>
+        <p><strong>Vrijeme:</strong> <span id="vreme"></span></p>
     </div>
-    <p>
+    <div>
       <a href="/admin">Admin</a>
       &nbsp;•&nbsp;
       <button onclick="speakMessage()">🔊 Pusti glas</button>
-    </p>
+    </div>
 </body>
 </html>
