@@ -41,12 +41,22 @@ function speakMessage() {
   }
 }
 
-window.onload = function() {
+// Kad se stranica učita
+window.addEventListener("load", function () {
   azurirajVreme();
   setInterval(azurirajVreme, 1000);
+
+  // Pokušaj odmah
   speakMessage();
-};
+
+  // Ako je browser blokirao, pusti na prvi klik
+  document.body.addEventListener("click", function handler() {
+    speakMessage();
+    document.body.removeEventListener("click", handler);
+  });
+});
 </script>
+
 </head>
 <body>
     <h2>{{ poruka }}</h2>
