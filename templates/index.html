@@ -15,20 +15,21 @@
     background-color: #f9fafb;
     color: #111827;
   }
-  span {
-  
-    font-weight: bold;
 
-}
+  /* Naslovi i poruka */
+  h1 {
+    font-size: 1.4rem;
+    margin: 0 0 8px;
+    color: #111827;
+    letter-spacing: .3px;
+  }
+  .sub {
+    color: #4b5563;
+    margin-bottom: 18px;
+    line-height: 1.4;
+  }
 
-  h1 { font-size: 1.4rem; margin: 0 0 8px; color: #111827; letter-spacing: .3px; }
-.sub {
-  color: #4b5563;
-  margin-bottom: 18px;
-  line-height: 1.4;
-  
-}
-
+  /* Traka sa meta podacima */
   .meta {
     display: inline-flex;
     gap: 14px;
@@ -41,7 +42,10 @@
     margin-bottom: 16px;
     font-size: 1.02rem;
   }
-  .meta b { color:#374151; }
+  .label { color:#374151; font-weight:600; }
+  .sep { opacity:.35; }
+
+  /* Dugmad/akcije */
   .actions { margin-top: 12px; }
   button {
     padding: 9px 16px;
@@ -69,10 +73,10 @@ function azurirajVreme() {
   document.getElementById('dan').textContent = dani[d.getDay()];
   document.getElementById('vreme').textContent = `${d.getHours()}:${pad2(d.getMinutes())}`;
 }
+
 function speakMessage() {
   const message = "{{ poruka_tts }}";
   if (window.responsiveVoice && responsiveVoice.voiceSupport()) {
-    // Sporije i prirodnije
     const opts = { rate: 0.9, pitch: 1.0 };
     if (responsiveVoice.speak(message, "Serbian Female", opts) === false) {
       responsiveVoice.speak(message, "Serbian Male", opts) ||
@@ -82,30 +86,33 @@ function speakMessage() {
     alert(message);
   }
 }
+
 window.addEventListener("load", function () {
   azurirajVreme();
-  setInterval(azurirajVreme, 30000); // nema sekundi, osvježi na 30s
-  speakMessage();
+  setInterval(azurirajVreme, 30000); // bez sekundi, osvježavanje na 30s
+
+  speakMessage(); // pokuša odmah
   document.body.addEventListener("click", function handler() {
-    speakMessage();
+    speakMessage();                // ako je autoplay blokiran, pusti na prvi klik
     document.body.removeEventListener("click", handler);
   });
 });
 </script>
 </head>
 <body>
-  
-<h1>{{ poruka_upper|safe }}</h1>
-<div class="sub">{{ poruka|safe }}</div>
 
-
-
-
+  <!-- META u jednom redu, bez suvišnih crtica -->
   <div class="meta">
-    <div> Datum: <span id="datum"></span></div>
-    <div><b> -</b> <span id="dan"></span></div>
-    <div>Vrijeme: <span id="vreme"></span></div>
+    <div><span class="label">Datum:</span> <span id="datum"></span></div>
+    <div class="sep">•</div>
+    <div><span class="label">Dan:</span> <span id="dan"></span></div>
+    <div class="sep">•</div>
+    <div><span class="label">Vrijeme:</span> <span id="vreme"></span></div>
   </div>
+
+  <!-- Poruka: H1 velikim slovima, ispod ista poruka normalno; <br> radi jer koristimo |safe -->
+  <h1>{{ poruka_upper|safe }}</h1>
+  <div class="sub">{{ poruka|safe }}</div>
 
   <div class="actions">
     <a href="/admin">Admin</a>
