@@ -18,7 +18,7 @@ DANI_PUNIM = ["Ponedjeljak", "Utorak", "Srijeda", "Četvrtak", "Petak", "Subota"
 
 def ucitaj_posebne_datume():
     try:
-        with open(DATA_FILE, "r", encoding="utf-8") as f:
+        with open(DATA_FILE, "r", encoding="utf-8") as f:https://radnovrijeme.onrender.com/
             return json.load(f)
     except FileNotFoundError:
         return {}
@@ -62,7 +62,7 @@ def index():
 
     # poruka sa "časova" (bez :00 i bez "h")
     if start is None:
-        poruka = "Danas je Nedjelja. Ordinacija ne radi."
+        poruka = "Danas je neradni dan."
     elif isinstance(start, int) and isinstance(end, int) and start <= sat < end:
         poruka = f"Ordinacija je trenutno otvorena. Danas je radno vrijeme  od {sat_label(start)} do {sat_label(end)} časova."
     elif isinstance(start, int) and isinstance(end, int):
