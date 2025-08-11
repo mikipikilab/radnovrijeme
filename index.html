@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<title>Radno vrijeme ordinacije</title>
+<script src="https://code.responsivevoice.org/responsivevoice.js?key=J55NcMXq"></script>
+<style>
+  body { font-family: system-ui, Arial, sans-serif; padding: 24px; max-width: 640px; margin: auto; }
+  h2 { margin-bottom: 8px; }
+  .box { background: #f7f7f9; border: 1px solid #e5e7eb; padding: 16px; border-radius: 12px; }
+  button { padding: 8px 12px; border-radius: 10px; border: 1px solid #e5e7eb; background: white; cursor: pointer; }
+</style>
+<script>
+function azurirajVreme() {
+  var danasnjiDatum = new Date();
+
+  var dan = danasnjiDatum.getDate();
+  var mesec = danasnjiDatum.getMonth() + 1;
+  var godina = danasnjiDatum.getFullYear().toString().slice(-2);
+  document.getElementById('datum').innerText = `${dan}.${mesec}.${godina}.`;
+
+  var sati = danasnjiDatum.getHours();
+  var minuti = danasnjiDatum.getMinutes();
+  var sekunde = danasnjiDatum.getSeconds();
+  document.getElementById('vreme').innerText =
+    `${sati}:${(minuti < 10 ? '0' : '') + minuti}:${(sekunde < 10 ? '0' : '') + sekunde}`;
+
+  var dani = ['ned', 'pon', 'uto', 'sri', 'čet', 'pet', 'sub'];
+  document.getElementById('dan').innerText = dani[danasnjiDatum.getDay()];
+}
+
+function speakMessage() {
+  let message = "{{ poruka }}";
+  if (window.responsiveVoice && responsiveVoice.voiceSupport()) {
+    if (responsiveVoice.speak(message, "Serbian Male") === false) {
+      responsiveVoice.speak(message, "Serbian Female") ||
+      responsiveVoice.speak(message, "Croatian Female");
+    }
+  } else {
+    alert(message);
+  }
+}
+
+window.onload = function() {
+  azurirajVreme();
+  setInterval(azurirajVreme, 1000);
+  speakMessage();
+};
+</script>
+</head>
+<body>
+    <h2>{{ poruka }}</h2>
+    <div class="box">
+        <p>Datum: <span id="datum"></span></p>
+        <p>Dan: <span id="dan"></span></p>
+        <p>Vrijeme: <span id="vreme"></span></p>
+    </div>
+    <p>
+      <a href="/admin">Admin</a>
+      &nbsp;•&nbsp;
+      <button onclick="speakMessage()">🔊 Pusti glas</button>
+    </p>
+</body>
+</html>
