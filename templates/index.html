@@ -82,15 +82,14 @@ window.addEventListener("load", function () {
 </script>
 </head>
 <body>
+<h1>{{ poruka_upper|safe }}</h1>
+<div class="sub">{{ poruka|safe }}</div>
 
   <div class="meta">
     <div><b>Datum:</b> <span id="datum"></span></div>
     <div><b>Dan:</b> <span id="dan"></span></div>
     <div><b>Vrijeme:</b> <span id="vreme"></span></div>
   </div>
-
-  <h1>{{ poruka_upper|safe }}</h1>
-  <div class="sub">{{ poruka|safe }}</div>
 
   <div class="actions">
     <a href="/admin">Admin</a>
