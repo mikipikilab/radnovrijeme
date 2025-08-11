@@ -69,7 +69,7 @@ function azurirajVreme() {
 }
 
 function speakMessage() {
-  const message = "{{ poruka }}";
+  const message = "{{ poruka_upper|safe }}";
   if (window.responsiveVoice && responsiveVoice.voiceSupport()) {
     if (responsiveVoice.speak(message, "Serbian Male") === false) {
       responsiveVoice.speak(message, "Serbian Female") ||
