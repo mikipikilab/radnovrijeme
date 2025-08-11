@@ -87,7 +87,7 @@ def index():
                 f"Danas je radno vrijeme od {sat_label(start)} do {sat_label(end)} časova."
             ]
         poruka_html = "<br>".join(linije)
-        poruka_tts  = " ".join(linije)  # bez <br>, TTS lijepo pauzira na tačkama
+        poruka_tts  = " ".join(linije)  # bez <br>, TTS pauzira na tačkama
 
     poruka_upper = poruka_html.upper()
 
