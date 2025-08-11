@@ -69,7 +69,8 @@ function azurirajVreme() {
 }
 
 function speakMessage() {
-  const message = "{{ poruka_upper|safe }}";
+  // koristi čisti tekst za govor (bez <br>, sa tačkama)
+  const message = "{{ poruka_tts }}";
   if (window.responsiveVoice && responsiveVoice.voiceSupport()) {
     if (responsiveVoice.speak(message, "Serbian Male") === false) {
       responsiveVoice.speak(message, "Serbian Female") ||
@@ -79,7 +80,6 @@ function speakMessage() {
     alert(message);
   }
 }
-
 window.addEventListener("load", function () {
   azurirajVreme();
   setInterval(azurirajVreme, 30000); // nema sekundi, osvježi na 30s
@@ -91,8 +91,9 @@ window.addEventListener("load", function () {
 });
 </script>
 </head>
-<body>
-<h1>{{ poruka_upper|safe }}</h1>
+<body><h1>{{ poruka_upper|safe }}</h1>
+<div class="sub">{{ poruka|safe }}</div>
+
 
 
   <div class="meta">
