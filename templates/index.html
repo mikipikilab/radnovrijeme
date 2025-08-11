@@ -45,6 +45,19 @@
   a:hover { text-decoration: underline; }
 </style>
 <script>
+function formatVrijeme(h, m, s) {
+  // Ako su minute i sekunde nula → prikaz samo sati
+  if (m === 0 && s === 0) {
+    return `${h}h`;
+  }
+  // Ako su sekunde nula → sati:min
+  if (s === 0) {
+    return `${h}:${(m<10?'0':'')+m}`;
+  }
+  // Inače puni format sati:min:sek
+  return `${h}:${(m<10?'0':'')+m}:${(s<10?'0':'')+s}`;
+}
+
 function azurirajVreme() {
   const d = new Date();
   const dan = d.getDate();
@@ -55,8 +68,7 @@ function azurirajVreme() {
   const h = d.getHours();
   const m = d.getMinutes();
   const s = d.getSeconds();
-  document.getElementById('vreme').innerText =
-    `${h}:${(m<10?'0':'')+m}:${(s<10?'0':'')+s}`;
+  document.getElementById('vreme').innerText = formatVrijeme(h, m, s);
 
   const dani = [
     'Nedjelja','Ponedjeljak','Utorak','Srijeda','Četvrtak','Petak','Subota'
@@ -67,7 +79,6 @@ function azurirajVreme() {
 function speakMessage() {
   const message = "{{ poruka }}";
   if (window.responsiveVoice && responsiveVoice.voiceSupport()) {
-    // pokuša muški → ženski → HR kao fallback
     if (responsiveVoice.speak(message, "Serbian Male") === false) {
       responsiveVoice.speak(message, "Serbian Female") ||
       responsiveVoice.speak(message, "Croatian Female");
@@ -81,10 +92,8 @@ window.addEventListener("load", function () {
   azurirajVreme();
   setInterval(azurirajVreme, 1000);
 
-  // Pokušaj odmah
   speakMessage();
 
-  // Ako je autoplay blokiran, pusti na prvi korisnički klik
   document.body.addEventListener("click", function handler() {
     speakMessage();
     document.body.removeEventListener("click", handler);
