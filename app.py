@@ -8,7 +8,7 @@ app = Flask(__name__, template_folder="templates")
 # Dodaj posebna pravila za utorak i subotu
 RADNO_VRIJEME = {
     "ponedjeljak": {"start": 10, "end": 20},
-    "utorak": {"start": 12, "end": 14.5},  # 14.5 = 14:30
+    "utorak": {"start": 10, "end": 20},  # 14.5 = 14:30
     "srijeda": {"start": 10, "end": 20},
     "četvrtak": {"start": 10, "end": 20},
     "petak": {"start": 10, "end": 20},
