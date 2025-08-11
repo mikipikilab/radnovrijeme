@@ -67,14 +67,14 @@ function azurirajVreme() {
   document.getElementById('dan').textContent = dani[d.getDay()];
   document.getElementById('vreme').textContent = `${d.getHours()}:${pad2(d.getMinutes())}`;
 }
-
 function speakMessage() {
-  // koristi čisti tekst za govor (bez <br>, sa tačkama)
   const message = "{{ poruka_tts }}";
   if (window.responsiveVoice && responsiveVoice.voiceSupport()) {
-    if (responsiveVoice.speak(message, "Serbian Male") === false) {
-      responsiveVoice.speak(message, "Serbian Female") ||
-      responsiveVoice.speak(message, "Croatian Female");
+    // Sporije i prirodnije
+    const opts = { rate: 0.9, pitch: 1.0 };
+    if (responsiveVoice.speak(message, "Serbian Female", opts) === false) {
+      responsiveVoice.speak(message, "Serbian Male", opts) ||
+      responsiveVoice.speak(message, "Croatian Female", opts);
     }
   } else {
     alert(message);
@@ -91,8 +91,11 @@ window.addEventListener("load", function () {
 });
 </script>
 </head>
-<body><h1>{{ poruka_upper|safe }}</h1>
+<body>
+  
+<h1>{{ poruka_upper|safe }}</h1>
 <div class="sub">{{ poruka|safe }}</div>
+
 
 
 
