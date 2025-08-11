@@ -53,11 +53,11 @@ def index():
     ime_dana = DANI_PUNIM[dan]
 
     # default raspored po danu
-    if dan < 5:
+    if dan < 2:
         sv = RADNO_VRIJEME["ponedjeljak-petak"]
         start, end = sv["start"], sv["end"]
-    elif dan == 5:
-        sv = RADNO_VRIJEME["subota"]
+    elif dan == 2:
+        sv = RADNO_VRIJEME["utorak"]
         start, end = sv["start"], sv["end"]
     else:
         start, end = None, None  # nedjelja
