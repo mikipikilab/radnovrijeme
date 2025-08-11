@@ -74,30 +74,50 @@ function azurirajVreme() {
   document.getElementById('vreme').textContent = `${d.getHours()}:${pad2(d.getMinutes())}`;
 }
 
-function speakMessage() {
-  const message = "{{ poruka_tts }}";
+// 1) Bezbedno ubaci backend tekst u JS (escape-ovano)
+const MESSAGE_TTS = {{ poruka_tts|tojson }};
+
+function reallySpeak() {
+  const opts = { rate: 0.9, pitch: 1.0 };
+  // probaj više glasova redom
+  return (
+    responsiveVoice.speak(MESSAGE_TTS, "Serbian Female", opts) ||
+    responsiveVoice.speak(MESSAGE_TTS, "Serbian Male", opts) ||
+    responsiveVoice.speak(MESSAGE_TTS, "Croatian Female", opts)
+  );
+}
+
+// 2) Sačekaj da se biblioteka učita, pokušaj par puta
+function speakMessage(retries = 10) {
   if (window.responsiveVoice && responsiveVoice.voiceSupport()) {
-    const opts = { rate: 0.9, pitch: 1.0 };
-    if (responsiveVoice.speak(message, "Serbian Female", opts) === false) {
-      responsiveVoice.speak(message, "Serbian Male", opts) ||
-      responsiveVoice.speak(message, "Croatian Female", opts);
+    const ok = reallySpeak();
+    if (ok === false && retries > 0) {
+      // ponekad se glasovi ucheitaju mrvu kasnije
+      setTimeout(() => speakMessage(retries - 1), 300);
     }
+  } else if (retries > 0) {
+    setTimeout(() => speakMessage(retries - 1), 300);
   } else {
-    alert(message);
+    // kao krajnji fallback
+    alert(MESSAGE_TTS);
   }
 }
 
 window.addEventListener("load", function () {
   azurirajVreme();
-  setInterval(azurirajVreme, 30000); // bez sekundi, osvježavanje na 30s
+  setInterval(azurirajVreme, 30000);
 
-  speakMessage(); // pokuša odmah
+  // Pokušaj automatski (može biti blokiran)
+  speakMessage();
+
+  // Ako je autoplay blokiran, pusti na prvi klik/tap
   document.body.addEventListener("click", function handler() {
-    speakMessage();                // ako je autoplay blokiran, pusti na prvi klik
+    speakMessage();
     document.body.removeEventListener("click", handler);
   });
 });
 </script>
+
 </head>
 <body>
 
