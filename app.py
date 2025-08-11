@@ -6,7 +6,7 @@ import json, os
 app = Flask(__name__, template_folder="templates")
 
 RADNO_VRIJEME = {
-    "ponedjeljak-petak": {"start": 10, "end": 20},
+    "ponedjeljak": {"start": 10, "end": 20},
     "utorak": {"start": 10, "end": 13},
     "nedjelja": None
 }
