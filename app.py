@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 from datetime import datetime
-from zoneinfo import ZoneInfo   # tačna lokalna zona na Render-u
+from zoneinfo import ZoneInfo
 import json, os
 
 app = Flask(__name__, template_folder="templates")
@@ -27,9 +27,16 @@ def sacuvaj_posebne_datume(data):
     with open(DATA_FILE, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
+def sat_label(h):
+    """Vrati '10h' umjesto '10:00' (ako h je int ili '10')."""
+    try:
+        h = int(h)
+        return f"{h}h"
+    except Exception:
+        return str(h)
+
 @app.route("/")
 def index():
-    # vrijeme po Europe/Podgorica (umjesto UTC)
     sada = datetime.now(ZoneInfo("Europe/Podgorica"))
     dan = sada.weekday()  # 0=pon ... 6=ned
     sat = sada.hour
@@ -39,26 +46,30 @@ def index():
     datum_str = sada.strftime("%Y-%m-%d")
 
     # default raspored po danu
-    if dan < 5:  # pon-pet
+    if dan < 5:
         sv = RADNO_VRIJEME["ponedjeljak-petak"]
         start, end = sv["start"], sv["end"]
-    elif dan == 5:  # subota
+    elif dan == 5:
         sv = RADNO_VRIJEME["subota"]
         start, end = sv["start"], sv["end"]
-    else:          # nedjelja
-        start, end = None, None
+    else:
+        start, end = None, None  # nedjelja
 
-    # posebni datum prepisuje default
+    # posebni datum prepisuje default (dozvoli [None, None] = neradni)
     if datum_str in posebni:
-        start, end = posebni[datum_str][0], posebni[datum_str][1]
+        ps = posebni[datum_str]
+        if isinstance(ps, (list, tuple)) and len(ps) == 2:
+            start, end = ps[0], ps[1]
 
-    # poruka
+    # poruka bez ":00"
     if start is None:
         poruka = "Danas je Nedjelja. Ordinacija ne radi."
-    elif start <= sat < end:
-        poruka = f"Ordinacija je trenutno otvorena. Danas ({ime_dana}) radimo od {start}:00 do {end}:00."
+    elif isinstance(start, int) and isinstance(end, int) and start <= sat < end:
+        poruka = f"Ordinacija je trenutno otvorena. Danas ({ime_dana}) radimo od {sat_label(start)} do {sat_label(end)}."
+    elif isinstance(start, int) and isinstance(end, int):
+        poruka = f"Ordinacija je trenutno zatvorena. Danas ({ime_dana}) radimo od {sat_label(start)} do {sat_label(end)}."
     else:
-        poruka = f"Ordinacija je trenutno zatvorena. Danas ({ime_dana}) radimo od {start}:00 do {end}:00."
+        poruka = f"Danas ({ime_dana}) je neradni dan."
 
     return render_template("index.html", poruka=poruka)
 
