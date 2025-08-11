@@ -1,83 +1,120 @@
-from flask import Flask, render_template, request, redirect, url_for
-from datetime import datetime
-import json, os
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<title>Radno vrijeme ordinacije</title>
+<script src="https://code.responsivevoice.org/responsivevoice.js?key=J55NcMXq"></script>
+<style>
+  body {
+    font-family: system-ui, Arial, sans-serif;
+    padding: 24px;
+    max-width: 640px;
+    margin: auto;
+    text-align: center;
+    background-color: #f9fafb;
+    color: #111827;
+  }
+  h2 {
+    margin-bottom: 16px;
+    font-size: 1.6rem;
+    color: #1f2937;
+  }
+  .box {
+    background: white;
+    border: 1px solid #e5e7eb;
+    padding: 16px;
+    border-radius: 12px;
+    display: inline-block;
+    text-align: left;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    margin-bottom: 16px;
+  }
+  .box p {
+    margin: 6px 0;
+    font-size: 1.1rem;
+  }
+  button {
+    padding: 8px 16px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    background: #f3f4f6;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  button:hover {
+    background: #e5e7eb;
+  }
+  a {
+    color: #2563eb;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+</style>
+<script>
+function azurirajVreme() {
+  var danasnjiDatum = new Date();
 
-app = Flask(__name__, template_folder="templates")
+  var dan = danasnjiDatum.getDate();
+  var mesec = danasnjiDatum.getMonth() + 1;
+  var godina = danasnjiDatum.getFullYear().toString().slice(-2);
+  document.getElementById('datum').innerText = `${dan}.${mesec}.${godina}.`;
 
-RADNO_VREME = {
-    "pon-petak": {"start": 10, "end": 20},
-    "subota": {"start": 10, "end": 13},
-    "nedelja": None
+  var sati = danasnjiDatum.getHours();
+  var minuti = danasnjiDatum.getMinutes();
+  var sekunde = danasnjiDatum.getSeconds();
+  document.getElementById('vreme').innerText =
+    `${sati}:${(minuti < 10 ? '0' : '') + minuti}:${(sekunde < 10 ? '0' : '') + sekunde}`;
+
+  var dani = [
+    'Nedjelja',
+    'Ponedjeljak',
+    'Utorak',
+    'Srijeda',
+    'Četvrtak',
+    'Petak',
+    'Subota'
+  ];
+  document.getElementById('dan').innerText = dani[danasnjiDatum.getDay()];
 }
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_FILE = os.path.join(BASE_DIR, "data.json")
+function speakMessage() {
+  let message = "{{ poruka }}";
+  if (window.responsiveVoice && responsiveVoice.voiceSupport()) {
+    if (responsiveVoice.speak(message, "Serbian Male") === false) {
+      responsiveVoice.speak(message, "Serbian Female") ||
+      responsiveVoice.speak(message, "Croatian Female");
+    }
+  } else {
+    alert(message);
+  }
+}
 
-def ucitaj_posebne_datume():
-    try:
-        with open(DATA_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except FileNotFoundError:
-        return {}
+window.addEventListener("load", function () {
+  azurirajVreme();
+  setInterval(azurirajVreme, 1000);
+  speakMessage();
 
-def sacuvaj_posebne_datume(data):
-    with open(DATA_FILE, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-
-@app.route("/")
-def index():
-    sada = datetime.now()
-    dan = sada.weekday()
-    sat = sada.hour
-
-    posebni = ucitaj_posebne_datume()
-    datum_str = sada.strftime("%Y-%m-%d")
-
-    if datum_str in posebni:
-        # podrži i listu [start,end] i tuple
-        start, end = posebni[datum_str]
-    else:
-        if dan < 5:
-            sv = RADNO_VREME["pon-petak"]
-            start, end = sv["start"], sv["end"]
-        elif dan == 5:
-            sv = RADNO_VREME["subota"]
-            start, end = sv["start"], sv["end"]
-        else:
-            start, end = None, None
-
-    if start is None:
-        poruka = "Danas je nedelja. Ordinacija ne radi."
-    elif not (start <= sat < end):
-        poruka = f"Radno vrijeme ordinacije je od {start} do {end} časova."
-    else:
-        poruka = "Ordinacija je trenutno otvorena."
-
-    return render_template("index.html", poruka=poruka)
-
-@app.route("/admin", methods=["GET", "POST"])
-def admin():
-    posebni = ucitaj_posebne_datume()
-    if request.method == "POST":
-        datum = request.form["datum"].strip()
-        start = int(request.form["start"])
-        end = int(request.form["end"])
-        posebni[datum] = [start, end]
-        sacuvaj_posebne_datume(posebni)
-        return redirect(url_for("admin"))
-    # sortiran prikaz
-    sortirano = dict(sorted(posebni.items()))
-    return render_template("admin.html", posebni=sortirano)
-
-@app.route("/obrisi/<datum>")
-def obrisi(datum):
-    posebni = ucitaj_posebne_datume()
-    if datum in posebni:
-        del posebni[datum]
-        sacuvaj_posebne_datume(posebni)
-    return redirect(url_for("admin"))
-
-if __name__ == "__main__":
-    # Lokalno pokretanje
-    port = int(os.environ.get("PORT", 5091))
-    app.run(host="0.0.0.0", port=port, debug=True)
+  // Ako je browser blokirao autoplay, pusti na prvi klik
+  document.body.addEventListener("click", function handler() {
+    speakMessage();
+    document.body.removeEventListener("click", handler);
+  });
+});
+</script>
+</head>
+<body>
+    <h2>{{ poruka }}</h2>
+    <div class="box">
+        <p><strong>Datum:</strong> <span id="datum"></span></p>
+        <p><strong>Dan:</strong> <span id="dan"></span></p>
+        <p><strong>Vrijeme:</strong> <span id="vreme"></span></p>
+    </div>
+    <div>
+      <a href="/admin">Admin</a>
+      &nbsp;•&nbsp;
+      <button onclick="speakMessage()">🔊 Pusti glas</button>
+    </div>
+</body>
+</html>
