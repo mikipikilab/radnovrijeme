@@ -76,9 +76,11 @@ def index():
     if start is None or end is None:
         poruka = "Danas je neradni dan."
     elif isinstance(start, int) and isinstance(end, int) and start <= sat < end:
-        poruka = f"Ordinacija je trenutno otvorena. Danas je radno vrijeme od {sat_label(start)} do {sat_label(end)} časova."
+        poruka = f"Ordinacija je trenutno otvorena.
+        Danas je radno vrijeme od {sat_label(start)} do {sat_label(end)} časova."
     elif isinstance(start, int) and isinstance(end, int):
-        poruka = f"Ordinacija je trenutno zatvorena. Danas je radno vrijeme od {sat_label(start)} do {sat_label(end)} časova."
+        poruka = f"Ordinacija je trenutno zatvorena. 
+        Danas je radno vrijeme od {sat_label(start)} do {sat_label(end)} časova."
     else:
         poruka = f"Danas  je neradni dan."
 
