@@ -24,7 +24,7 @@
     letter-spacing: .3px;
   }
   .sub {
-    color: #4b5563;
+    color: white;
     margin-bottom: 18px;
     line-height: 1.4;
   }
@@ -121,18 +121,18 @@ window.addEventListener("load", function () {
 </head>
 <body>
 
+  <!-- Poruka: H1 velikim slovima, ispod ista poruka normalno; <br> radi jer koristimo |safe -->
+  <h1>{{ poruka_upper|safe }}</h1>
+  <div class="sub">{{ poruka|safe }}</div>
+
   <!-- META u jednom redu, bez suvišnih crtica -->
   <div class="meta">
     <div><span class="label">Datum:</span> <span id="datum"></span></div>
     <div class="sep">•</div>
-    <div><span class="label">Dan:</span> <span id="dan"></span></div>
+    <div><span class="label"></span> <span id="dan"></span></div>
     <div class="sep">•</div>
     <div><span class="label">Vrijeme:</span> <span id="vreme"></span></div>
   </div>
-
-  <!-- Poruka: H1 velikim slovima, ispod ista poruka normalno; <br> radi jer koristimo |safe -->
-  <h1>{{ poruka_upper|safe }}</h1>
-  <div class="sub">{{ poruka|safe }}</div>
 
   <div class="actions">
     <a href="/admin">Admin</a>
