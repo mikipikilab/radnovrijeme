@@ -73,37 +73,34 @@ def index():
         end   = ps[1] if ps[1] is not None else None
 
   # poruka sa "časova" i <br> za novi red
+       # poruke: HTML za prikaz (sa <br>) i čisti tekst za TTS (bez tagova)
     if start is None or end is None:
-        poruka = "Danas je neradni dan."
-    elif isinstance(start, int) and isinstance(end, int) and start <= sat < end:
-        poruka = (
-            "Ordinacija je trenutno otvorena.<br>"
-            f"Danas je radno vrijeme od {sat_label(start)} do {sat_label(end)} časova."
-        )
-    elif isinstance(start, int) and isinstance(end, int):
-        poruka = (
-            "Ordinacija je trenutno zatvorena.<br>"
-            f"Danas je radno vrijeme od {sat_label(start)} do {sat_label(end)} časova."
-        )
+        poruka_html = "Danas je neradni dan."
+        poruka_tts  = "Danas ne radimo."
     else:
-        poruka = "Danas je neradni dan."
+        otv = (start <= sat < end)
+        if otv:
+            linije = [
+                "Ordinacija je trenutno otvorena.",
+                f"Danas je radno vrijeme od {sat_label(start)} do {sat_label(end)} časova."
+            ]
+        else:
+            linije = [
+                "Ordinacija je trenutno zatvorena.",
+                f"Danas je radno vrijeme od {sat_label(start)} do {sat_label(end)} časova."
+            ]
+        poruka_html = "<br>".join(linije)
+        poruka_tts  = " ".join(linije)  # bez <br>, pa TTS lijepo pauzira na tački
 
-    # verzije za prikaz i za TTS
-    poruka_upper = poruka.upper()
-
-    # TTS bez HTML-a i sa tačkama radi pauze
-    # (umjesto <br> stavljamo ". " da bolje zvuči)
-    poruka_tts = poruka.replace("<br>", ". ")
-    # ako kojim slučajem ostane neki tag, ukloni ga
-    import re
-    poruka_tts = re.sub(r"<[^>]+>", " ", poruka_tts).strip()
+    poruka_upper = poruka_html.upper()
 
     return render_template(
         "index.html",
         poruka_upper=poruka_upper,
-        poruka=poruka,
+        poruka=poruka_html,
         poruka_tts=poruka_tts
     )
+
 
 @app.route("/admin", methods=["GET", "POST"])
 def admin():
