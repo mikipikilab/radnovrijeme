@@ -40,10 +40,10 @@ def index():
 
     # default raspored po danu
     if dan < 5:  # pon-pet
-        sv = RADNO_VRIJEME["ponedjeljak-petak"]
+        sv = NO_VRIJEME["ponedjeljak-petak"]
         start, end = sv["start"], sv["end"]
     elif dan == 5:  # subota
-        sv = RADNO_VRIJEME["subota"]
+        sv = NO_VRIJEME["subota"]
         start, end = sv["start"], sv["end"]
     else:          # nedjelja
         start, end = None, None
@@ -54,11 +54,11 @@ def index():
 
     # poruka
     if start is None:
-        poruka = "Danas je Nedjelja. Ordinacija ne radi."
+        poruka = "Danas je Nedjelja. Ordinacija ne i."
     elif start <= sat < end:
-        poruka = f"Ordinacija je trenutno otvorena. Danas ({ime_dana}) radimo od {start}:00 do {end}:00."
+        poruka = f"Ordinacija je trenutno otvorena. Danas ({ime_dana}) radimo od {start} do {end}."
     else:
-        poruka = f"Ordinacija je trenutno zatvorena. Danas ({ime_dana}) radimo od {start}:00 do {end}:00."
+        poruka = f"Ordinacija je trenutno zatvorena. Danas ({ime_dana}) radimo od {start} do {end}."
 
     return render_template("index.html", poruka=poruka)
 
