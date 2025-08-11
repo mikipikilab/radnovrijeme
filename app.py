@@ -31,7 +31,7 @@ def sat_label(h):
     """Vrati '10h' umjesto '10:00' (ako h je int ili '10')."""
     try:
         h = int(h)
-        return f"{h}h"
+        return f"{h}"
     except Exception:
         return str(h)
 
@@ -65,9 +65,9 @@ def index():
     if start is None:
         poruka = "Danas je Nedjelja. Ordinacija ne radi."
     elif isinstance(start, int) and isinstance(end, int) and start <= sat < end:
-        poruka = f"Ordinacija je trenutno otvorena. Danas ({ime_dana}) radimo od {sat_label(start)} do {sat_label(end)}."
+        poruka = f"Ordinacija je trenutno otvorena. Danas je radno vrijeme od {sat_label(start)} do {sat_label(end)}."
     elif isinstance(start, int) and isinstance(end, int):
-        poruka = f"Ordinacija je trenutno zatvorena. Danas ({ime_dana}) radimo od {sat_label(start)} do {sat_label(end)}."
+        poruka = f"Ordinacija je trenutno zatvorena. Danas je radno vrijeme od {sat_label(start)} do {sat_label(end)}."
     else:
         poruka = f"Danas ({ime_dana}) je neradni dan."
 
