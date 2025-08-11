@@ -73,16 +73,17 @@ def index():
         end   = ps[1] if ps[1] is not None else None
 
     # poruka sa "časova"
-    if start is None or end is None:
-        poruka = "Danas je neradni dan."
-    elif isinstance(start, int) and isinstance(end, int) and start <= sat < end:
-        poruka = f"Ordinacija je trenutno otvorena.
-        Danas je radno vrijeme od {sat_label(start)} do {sat_label(end)} časova."
-    elif isinstance(start, int) and isinstance(end, int):
-        poruka = f"Ordinacija je trenutno zatvorena. 
-        Danas je radno vrijeme od {sat_label(start)} do {sat_label(end)} časova."
-    else:
-        poruka = f"Danas  je neradni dan."
+  if start is None or end is None:
+    poruka = "Danas je neradni dan."
+elif isinstance(start, int) and isinstance(end, int) and start <= sat < end:
+    poruka = f"Ordinacija je trenutno otvorena.<br>Danas je radno vrijeme od {sat_label(start)} do {sat_label(end)} časova."
+elif isinstance(start, int) and isinstance(end, int):
+    poruka = f"Ordinacija je trenutno zatvorena.<br>Danas je radno vrijeme od {sat_label(start)} do {sat_label(end)} časova."
+else:
+    poruka = "Danas je neradni dan."
+
+poruka_upper = poruka.upper()
+return render_template("index.html", poruka_upper=poruka_upper, poruka=poruka)
 
     return render_template("index.html", poruka=poruka)
 
