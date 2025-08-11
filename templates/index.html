@@ -45,17 +45,8 @@
   a:hover { text-decoration: underline; }
 </style>
 <script>
-function formatVrijeme(h, m, s) {
-  // Ako su minute i sekunde nula → prikaz samo sati
-  if (m === 0 && s === 0) {
-    return `${h}h`;
-  }
-  // Ako su sekunde nula → sati:min
-  if (s === 0) {
-    return `${h}:${(m<10?'0':'')+m}`;
-  }
-  // Inače puni format sati:min:sek
-  return `${h}:${(m<10?'0':'')+m}:${(s<10?'0':'')+s}`;
+function formatVrijeme(h, m) {
+  return `${h}:${(m<10?'0':'')+m}`;
 }
 
 function azurirajVreme() {
@@ -63,17 +54,11 @@ function azurirajVreme() {
   const dan = d.getDate();
   const mjesec = d.getMonth() + 1;
   const godina = d.getFullYear().toString().slice(-2);
-  document.getElementById('datum').innerText = `${dan}.${mjesec}.${godina}.`;
-
-  const h = d.getHours();
-  const m = d.getMinutes();
-  const s = d.getSeconds();
-  document.getElementById('vreme').innerText = formatVrijeme(h, m, s);
-
   const dani = [
     'Nedjelja','Ponedjeljak','Utorak','Srijeda','Četvrtak','Petak','Subota'
   ];
-  document.getElementById('dan').innerText = dani[d.getDay()];
+  document.getElementById('datum').innerText = `${dan}.${mjesec}.${godina}. ${dani[d.getDay()]}`;
+  document.getElementById('vreme').innerText = formatVrijeme(d.getHours(), d.getMinutes());
 }
 
 function speakMessage() {
@@ -102,13 +87,12 @@ window.addEventListener("load", function () {
 </script>
 </head>
 <body>
-    <h1>{{ poruka }}</h1>
-    <div class="sub">RADNO VRIJEME OD 10 DO 20 ČASOVA RADNIM DANIMA, SUBOTOM OD 10 DO 14 ČASOVA.</div>
-
     <div class="box">
-      <div class="row"><b>Datum:</b> <span class="value" id="datum"></span> -<span class="value" id="dan"></span></div>
+      <div class="row"><b>Datum i dan:</b> <span class="value" id="datum"></span></div>
       <div class="row"><b>Vrijeme:</b> <span class="value" id="vreme"></span></div>
     </div>
+
+    <h1>{{ poruka }}</h1>
 
     <div class="actions">
       <a href="/admin">Admin</a>
