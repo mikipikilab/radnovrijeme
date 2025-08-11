@@ -5,9 +5,14 @@ import json, os
 
 app = Flask(__name__, template_folder="templates")
 
+# Dodaj posebna pravila za utorak i subotu
 RADNO_VRIJEME = {
     "ponedjeljak": {"start": 10, "end": 20},
-    "utorak": {"start": 10, "end": 13},
+    "utorak": {"start": 12, "end": 14.5},  # 14.5 = 14:30
+    "srijeda": {"start": 10, "end": 20},
+    "četvrtak": {"start": 10, "end": 20},
+    "petak": {"start": 10, "end": 20},
+    "subota": {"start": 10, "end": 14},
     "nedjelja": None
 }
 
@@ -41,7 +46,11 @@ def to_int_or_none(x):
 
 def sat_label(h):
     try:
-        return str(int(h))  # npr. 10 -> "10"
+        if isinstance(h, float) and not h.is_integer():
+            sati = int(h)
+            minuti = int((h - sati) * 60)
+            return f"{sati}:{minuti:02d}"
+        return str(int(h))
     except Exception:
         return str(h)
 
@@ -49,20 +58,16 @@ def sat_label(h):
 def index():
     sada = now_podgorica()
     dan = sada.weekday()  # 0=pon ... 6=ned
-    sat = sada.hour
-    ime_dana = DANI_PUNIM[dan]
+    ime_dana = DANI_PUNIM[dan].lower()
 
-    # default raspored po danu
-    if dan < 2:
-        sv = RADNO_VRIJEME["ponedjeljak-petak"]
-        start, end = sv["start"], sv["end"]
-    elif dan == 2:
-        sv = RADNO_VRIJEME["utorak"]
-        start, end = sv["start"], sv["end"]
+    # radno vrijeme iz tabele
+    sv = RADNO_VRIJEME.get(ime_dana)
+    if sv is None:
+        start, end = None, None
     else:
-        start, end = None, None  # nedjelja
+        start, end = sv["start"], sv["end"]
 
-    # posebni datum (ako postoji) prepisuje default; dozvoli [None, None] = neradni
+    # posebni datum prepisuje default
     posebni = ucitaj_posebne_datume()
     datum_str = sada.strftime("%Y-%m-%d")
     ps = posebni.get(datum_str)
@@ -70,11 +75,12 @@ def index():
         start = ps[0] if ps[0] is not None else None
         end   = ps[1] if ps[1] is not None else None
 
-    # poruke: HTML (sa <br>) za prikaz i čisti tekst za TTS
+    # poruka
     if start is None or end is None:
         poruka_html = "Danas je neradni dan."
         poruka_tts  = "Danas ne radimo."
     else:
+        sat = sada.hour + sada.minute / 60
         otvoreno_sad = (start <= sat < end)
         if otvoreno_sad:
             linije = [
@@ -87,7 +93,7 @@ def index():
                 f"Danas je radno vrijeme od {sat_label(start)} do {sat_label(end)} časova."
             ]
         poruka_html = "<br>".join(linije)
-        poruka_tts  = " ".join(linije)  # bez <br>, TTS pauzira na tačkama
+        poruka_tts  = " ".join(linije)
 
     poruka_upper = poruka_html.upper()
 
@@ -109,7 +115,7 @@ def admin():
             start = to_int_or_none(request.form.get("start"))
             end   = to_int_or_none(request.form.get("end"))
             if start is None or end is None:
-                start = end = None  # prazno/neispravno -> neradni
+                start = end = None
         posebni[datum] = [start, end]
         sacuvaj_posebne_datume(posebni)
         return redirect(url_for("admin"))
