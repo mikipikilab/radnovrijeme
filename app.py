@@ -28,10 +28,9 @@ def sacuvaj_posebne_datume(data):
         json.dump(data, f, ensure_ascii=False, indent=2)
 
 def sat_label(h):
-    """Vrati '10h' umjesto '10:00' (ako h je int ili '10')."""
+    """Vrati cijeli sat kao string (npr. 10)."""
     try:
-        h = int(h)
-        return f"{h}"
+        return str(int(h))
     except Exception:
         return str(h)
 
@@ -61,13 +60,13 @@ def index():
         if isinstance(ps, (list, tuple)) and len(ps) == 2:
             start, end = ps[0], ps[1]
 
-    # poruka bez ":00"
+    # poruka sa "časova" (bez :00 i bez "h")
     if start is None:
         poruka = "Danas je Nedjelja. Ordinacija ne radi."
     elif isinstance(start, int) and isinstance(end, int) and start <= sat < end:
-        poruka = f"Ordinacija je trenutno otvorena. Danas je radno vrijeme od {sat_label(start)} do {sat_label(end)}."
+        poruka = f"Ordinacija je trenutno otvorena. Danas ({ime_dana}) radimo od {sat_label(start)} do {sat_label(end)} časova."
     elif isinstance(start, int) and isinstance(end, int):
-        poruka = f"Ordinacija je trenutno zatvorena. Danas je radno vrijeme od {sat_label(start)} do {sat_label(end)}."
+        poruka = f"Ordinacija je trenutno zatvorena. Danas ({ime_dana}) radimo od {sat_label(start)} do {sat_label(end)} časova."
     else:
         poruka = f"Danas ({ime_dana}) je neradni dan."
 
