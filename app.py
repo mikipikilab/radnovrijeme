@@ -72,24 +72,38 @@ def index():
         start = ps[0] if ps[0] is not None else None
         end   = ps[1] if ps[1] is not None else None
 
-    # poruka sa "časova" i <br> za novi red
+  # poruka sa "časova" i <br> za novi red
     if start is None or end is None:
         poruka = "Danas je neradni dan."
     elif isinstance(start, int) and isinstance(end, int) and start <= sat < end:
         poruka = (
-            f"Ordinacija je trenutno otvorena.<br>"
+            "Ordinacija je trenutno otvorena.<br>"
             f"Danas je radno vrijeme od {sat_label(start)} do {sat_label(end)} časova."
         )
     elif isinstance(start, int) and isinstance(end, int):
         poruka = (
-            f"Ordinacija je trenutno zatvorena.<br>"
+            "Ordinacija je trenutno zatvorena.<br>"
             f"Danas je radno vrijeme od {sat_label(start)} do {sat_label(end)} časova."
         )
     else:
         poruka = "Danas je neradni dan."
 
+    # verzije za prikaz i za TTS
     poruka_upper = poruka.upper()
-    return render_template("index.html", poruka_upper=poruka_upper, poruka=poruka)
+
+    # TTS bez HTML-a i sa tačkama radi pauze
+    # (umjesto <br> stavljamo ". " da bolje zvuči)
+    poruka_tts = poruka.replace("<br>", ". ")
+    # ako kojim slučajem ostane neki tag, ukloni ga
+    import re
+    poruka_tts = re.sub(r"<[^>]+>", " ", poruka_tts).strip()
+
+    return render_template(
+        "index.html",
+        poruka_upper=poruka_upper,
+        poruka=poruka,
+        poruka_tts=poruka_tts
+    )
 
 @app.route("/admin", methods=["GET", "POST"])
 def admin():
