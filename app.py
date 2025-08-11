@@ -77,13 +77,17 @@ def admin():
     posebni = ucitaj_posebne_datume()
     if request.method == "POST":
         datum = request.form["datum"].strip()
-        start = int(request.form["start"])
-        end = int(request.form["end"])
+        if "neradni" in request.form:
+            start, end = None, None
+        else:
+            start = int(request.form["start"])
+            end = int(request.form["end"])
         posebni[datum] = [start, end]
         sacuvaj_posebne_datume(posebni)
         return redirect(url_for("admin"))
     sortirano = dict(sorted(posebni.items()))
     return render_template("admin.html", posebni=sortirano)
+
 
 @app.route("/obrisi/<datum>")
 def obrisi(datum):
