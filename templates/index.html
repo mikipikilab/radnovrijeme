@@ -13,25 +13,17 @@ body {
   margin: 0;
   padding: 24px;
 
-  /* Flex centriranje */
-  display: flex;
-  flex-direction: column;
-  justify-content: center; /* vertikalno */
-  align-items: center;     /* horizontalno */
-
-  min-height: 100vh; /* cijela visina ekrana */
+  /* Centriranje sadržaja */
   text-align: center;
 }
 
+.logo {
+  display: block;       /* blok element */
+  max-width: 80%;       /* maksimalna širina 80% ekrana */
+  height: auto;         /* zadržava proporcije */
+  margin: 0 auto 20px;  /* centriranje + razmak ispod */
+}
 
-  /* LOGO */
-  .logo {
-    display: inline-block;
-    width: 50%;
-    max-width: 50%;
-    height: auto;
-    margin: 0;
-  }
 
 /* Glavna poruka */
 h1 {
