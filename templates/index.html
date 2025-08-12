@@ -67,24 +67,26 @@ font-size: clamp(2.5rem, 5vw, 3.5rem); /* VEĆE */
 }
 
 
-button {
-  padding: 18px 28px; /* VEĆE */
+button.speaker-btn {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 18px 28px;
   border-radius: 20px;
-  border: 2px solid #d1d5db; /* malo deblji okvir da se ističe */
-  background: #ffffff; /* bijela pozadina */
+  border: 2px solid #d1d5db;
+  background: #ffffff;
   cursor: pointer;
-  font-size: 3.6rem; /* VEĆA slova */
-  color: #111827; /* tamno sivi tekst */
+  font-size: 3.6rem;
+  color: #111827;
   font-weight: 800;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   transition: background 0.2s ease, color 0.2s ease;
+  z-index: 9999; /* iznad svega */
 }
-
-button:hover {
-  background: #f3f4f6; /* svijetlo siva na hover */
-  color: #000000; /* crni tekst na hover */
+button.speaker-btn:hover {
+  background: #f3f4f6;
+  color: #000000;
 }
-
   a {
     color: #2563eb;
     text-decoration: none;
@@ -167,7 +169,7 @@ window.addEventListener("load", function () {
 
   <!-- LOGO -->
 
-
+  <button class="speaker-btn" onclick="speakMessage()">🔊</button>
 <img src="{{ url_for('static', filename=status_slika) }}"
      alt="Status ordinacije"
      class="status-img"
@@ -190,8 +192,7 @@ window.addEventListener("load", function () {
   <!-- Akcije -->
   <div class="actions">
     <a href="/admin">Admin</a>
-    &nbsp;•&nbsp;
-    <button onclick="speakMessage()">🔊</button>
+
   </div>
 
 </body>
