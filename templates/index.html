@@ -149,11 +149,11 @@ window.addEventListener("load", function () {
 <body>
 
   <!-- LOGO -->
-<img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="logo" loading="lazy">
+
 
 <img src="{{ url_for('static', filename=status_slika) }}" 
      alt="Status ordinacije" 
-     style="max-width:150px; margin-bottom:15px;">
+     style="max-width:350px; margin-bottom:15px;">
 
   <!-- Poruka -->
   <h1>{{ poruka_upper|safe }}</h1>
