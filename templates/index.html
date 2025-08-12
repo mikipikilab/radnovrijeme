@@ -6,22 +6,15 @@
 <script src="https://code.responsivevoice.org/responsivevoice.js?key=J55NcMXq"></script>
 <style>
   :root { color-scheme: light; }
-  body {
-    font-family: system-ui, Arial, sans-serif;
-    padding: 24px;
-
-    margin: auto;
-    text-align: center;
-    background-color: #f9fafb;
-    color: #111827;
-  }
-
-  /* Logo */
-  .logo {
-    width: 100%;
-    margin: 0 auto 16px;
-    display: block;
-  }
+.logo {
+  display: inline-block;  /* da ne ide full block, nego inline-block */
+  width: 100%;            /* zauzima punu širinu roditelja */
+  max-width: 100%;        /* sprječava da pređe širinu containera */
+  height: auto;           /* proporcionalno skaliranje */
+}
+body {
+  text-align: center;     /* centriranje inline-block elemenata */
+}
 
   /* Naslovi i poruka */
   h1 {
@@ -126,7 +119,8 @@ window.addEventListener("load", function () {
 <body>
 
   <!-- LOGO -->
-<img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="logo">
+<img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="logo" loading="lazy">
+
 
   <!-- Poruka -->
   <h1>{{ poruka_upper|safe }}</h1>
