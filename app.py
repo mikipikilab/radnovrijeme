@@ -78,7 +78,7 @@ def index():
     # poruka
     if start is None or end is None:
         poruka_html = "Danas je neradni dan."
-        poruka_tts  = "Danas ne radimo."
+        poruka_tts  = "Danas je neradni dan."
     else:
         sat = sada.hour + sada.minute / 60
         otvoreno_sad = (start <= sat < end)
