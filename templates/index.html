@@ -92,6 +92,27 @@ button:hover {
     font-weight: 700;
   }
   a:hover { text-decoration: underline; }
+  /* STATUS SLIKA (open/close) – veća + animacija njihanja */
+.status-img{
+  display:block;
+  width: clamp(240px, 45vw, 560px); /* VEĆA, responsivna širina */
+  height:auto;
+  margin: 120px auto 18px;         /* udaljena od vrha */
+  transform-origin: top center;     /* rotira oko VRHA */
+  animation: swing 2.4s ease-in-out infinite alternate;
+}
+
+/* njihanje -5° ↔ +5° */
+@keyframes swing{
+  from{ transform: rotate(-5deg); }
+  to  { transform: rotate(5deg); }
+}
+
+/* ako korisnik traži smanjeno kretanje */
+@media (prefers-reduced-motion: reduce){
+  .status-img{ animation: none; }
+}
+
 </style>
 
 <script>
@@ -151,9 +172,11 @@ window.addEventListener("load", function () {
   <!-- LOGO -->
 
 
-<img src="{{ url_for('static', filename=status_slika) }}" 
-     alt="Status ordinacije" 
-     style="max-width:350px; margin-bottom:15px;">
+<img src="{{ url_for('static', filename=status_slika) }}"
+     alt="Status ordinacije"
+     class="status-img"
+     loading="lazy">
+
 
   <!-- Poruka -->
   <h1>{{ poruka_upper|safe }}</h1>
