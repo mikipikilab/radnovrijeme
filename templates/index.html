@@ -75,20 +75,24 @@ font-size: clamp(2.5rem, 5vw, 3.5rem); /* VEĆE */
 }
 
 
-  /* Dugmad/akcije */
-  .actions { margin-top: 24px; }
-  button {
-    padding: 18px 28px; /* VEĆE */
-    border-radius: 12px;
-    border: 1px solid #d1d5db;
-    background: white;
-    cursor: pointer;
-    font-size: 3.6rem; /* VEĆE */
-    color: #fff;
-    font-weight: 800;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  }
-  button:hover { background: #2563eb; }
+button {
+  padding: 18px 28px; /* VEĆE */
+  border-radius: 12px;
+  border: 2px solid #d1d5db; /* malo deblji okvir da se ističe */
+  background: #ffffff; /* bijela pozadina */
+  cursor: pointer;
+  font-size: 3.6rem; /* VEĆA slova */
+  color: #111827; /* tamno sivi tekst */
+  font-weight: 800;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+button:hover {
+  background: #f3f4f6; /* svijetlo siva na hover */
+  color: #000000; /* crni tekst na hover */
+}
+
   a {
     color: #2563eb;
     text-decoration: none;
