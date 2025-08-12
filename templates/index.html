@@ -16,9 +16,16 @@
     color: #111827;
   }
 
+  /* Logo */
+  .logo {
+    max-width: 160px;
+    margin: 0 auto 16px;
+    display: block;
+  }
+
   /* Naslovi i poruka */
   h1 {
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     margin: 0 0 8px;
     color: #111827;
     letter-spacing: .3px;
@@ -29,34 +36,39 @@
     line-height: 1.4;
   }
 
-  /* Traka sa meta podacima */
+  /* Meta podaci (datum, dan, vrijeme) */
   .meta {
-    display: inline-flex;
-    gap: 14px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
     align-items: center;
     background: #fff;
     border: 1px solid #e5e7eb;
     border-radius: 12px;
-    padding: 10px 14px;
+    padding: 14px 18px;
     box-shadow: 0 6px 18px rgba(0,0,0,.06);
     margin-bottom: 16px;
-    font-size: 1.02rem;
+    font-size: 1.3rem;
+    font-weight: bold;
   }
   .label { color:#374151; font-weight:600; }
-  .sep { opacity:.35; }
+  .sep { opacity:.35; font-weight: normal; }
 
   /* Dugmad/akcije */
-  .actions { margin-top: 12px; }
+  .actions { margin-top: 16px; }
   button {
-    padding: 9px 16px;
-    border-radius: 10px;
-    border: 1px solid #e5e7eb;
-    background: #f3f4f6;
+    padding: 12px 20px;
+    border-radius: 12px;
+    border: 1px solid #d1d5db;
+    background: #3b82f6;
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 1.2rem;
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   }
-  button:hover { background: #e5e7eb; }
-  a { color: #2563eb; text-decoration: none; }
+  button:hover { background: #2563eb; }
+  a { color: #2563eb; text-decoration: none; font-size: 1.1rem; font-weight: bold; }
   a:hover { text-decoration: underline; }
 </style>
 <script>
@@ -74,12 +86,10 @@ function azurirajVreme() {
   document.getElementById('vreme').textContent = `${d.getHours()}:${pad2(d.getMinutes())}`;
 }
 
-// 1) Bezbedno ubaci backend tekst u JS (escape-ovano)
 const MESSAGE_TTS = {{ poruka_tts|tojson }};
 
 function reallySpeak() {
   const opts = { rate: 0.9, pitch: 1.0 };
-  // probaj više glasova redom
   return (
     responsiveVoice.speak(MESSAGE_TTS, "Serbian Female", opts) ||
     responsiveVoice.speak(MESSAGE_TTS, "Serbian Male", opts) ||
@@ -87,18 +97,15 @@ function reallySpeak() {
   );
 }
 
-// 2) Sačekaj da se biblioteka učita, pokušaj par puta
 function speakMessage(retries = 10) {
   if (window.responsiveVoice && responsiveVoice.voiceSupport()) {
     const ok = reallySpeak();
     if (ok === false && retries > 0) {
-      // ponekad se glasovi ucheitaju mrvu kasnije
       setTimeout(() => speakMessage(retries - 1), 300);
     }
   } else if (retries > 0) {
     setTimeout(() => speakMessage(retries - 1), 300);
   } else {
-    // kao krajnji fallback
     alert(MESSAGE_TTS);
   }
 }
@@ -107,33 +114,34 @@ window.addEventListener("load", function () {
   azurirajVreme();
   setInterval(azurirajVreme, 30000);
 
-  // Pokušaj automatski (može biti blokiran)
   speakMessage();
 
-  // Ako je autoplay blokiran, pusti na prvi klik/tap
   document.body.addEventListener("click", function handler() {
     speakMessage();
     document.body.removeEventListener("click", handler);
   });
 });
 </script>
-
 </head>
 <body>
 
-  <!-- Poruka: H1 velikim slovima, ispod ista poruka normalno; <br> radi jer koristimo |safe -->
+  <!-- LOGO -->
+  <img src="logo.png" alt="Logo" class="logo">
+
+  <!-- Poruka -->
   <h1>{{ poruka_upper|safe }}</h1>
   <div class="sub">{{ poruka|safe }}</div>
 
-  <!-- META u jednom redu, bez suvišnih crtica -->
+  <!-- Meta podaci -->
   <div class="meta">
-    <div><span class="label">Datum:</span> <span id="datum"></span></div>
+    <div><span id="datum"></span></div>
     <div class="sep">•</div>
-    <div><span class="label"></span> <span id="dan"></span></div>
+    <div><span id="dan"></span></div>
     <div class="sep">•</div>
-    <div><span class="label">Vrijeme:</span> <span id="vreme"></span></div>
+    <div><span id="vreme"></span></div>
   </div>
 
+  <!-- Akcije -->
   <div class="actions">
     <a href="/admin">Admin</a>
     &nbsp;•&nbsp;
