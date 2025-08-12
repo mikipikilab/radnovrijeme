@@ -53,21 +53,18 @@ def sat_label(h):
         return str(int(h))
     except Exception:
         return str(h)
-
 @app.route("/")
 def index():
     sada = now_podgorica()
-    dan = sada.weekday()  # 0=pon ... 6=ned
+    dan = sada.weekday()
     ime_dana = DANI_PUNIM[dan].lower()
 
-    # radno vrijeme iz tabele
     sv = RADNO_VRIJEME.get(ime_dana)
     if sv is None:
         start, end = None, None
     else:
         start, end = sv["start"], sv["end"]
 
-    # posebni datum prepisuje default
     posebni = ucitaj_posebne_datume()
     datum_str = sada.strftime("%Y-%m-%d")
     ps = posebni.get(datum_str)
@@ -75,10 +72,11 @@ def index():
         start = ps[0] if ps[0] is not None else None
         end   = ps[1] if ps[1] is not None else None
 
-    # poruka
+    # odredi status i poruku
     if start is None or end is None:
         poruka_html = "Danas je neradni dan."
         poruka_tts  = "Danas je neradni dan."
+        status_slika = "close.png"
     else:
         sat = sada.hour + sada.minute / 60
         otvoreno_sad = (start <= sat < end)
@@ -87,11 +85,14 @@ def index():
                 "Ordinacija je trenutno otvorena.",
                 f"Danas je radno vrijeme od {sat_label(start)} do {sat_label(end)} časova."
             ]
+            status_slika = "open.png"
         else:
             linije = [
                 "Ordinacija je trenutno zatvorena.",
                 f"Danas je radno vrijeme od {sat_label(start)} do {sat_label(end)} časova."
             ]
+            status_slika = "close.png"
+
         poruka_html = "<br>".join(linije)
         poruka_tts  = " ".join(linije)
 
@@ -101,7 +102,8 @@ def index():
         "index.html",
         poruka_upper=poruka_upper,
         poruka=poruka_html,
-        poruka_tts=poruka_tts
+        poruka_tts=poruka_tts,
+        status_slika=status_slika
     )
 
 @app.route("/admin", methods=["GET", "POST"])
