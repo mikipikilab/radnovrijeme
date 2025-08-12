@@ -42,25 +42,26 @@
     font-size: clamp(1.4rem, 3vw, 2rem); /* VEĆE */
     font-weight: 500;
   }
-  .meta {
-    display: flex;
-    justify-content: center;
-    gap: 26px;
-    align-items: center;
-    background: #fff;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 18px 22px;
-    box-shadow: 0 6px 18px rgba(0,0,0,.06);
-    margin: 0 auto 22px;
-    font-size: clamp(1.6rem, 3vw, 2.2rem); /* VEĆE */
-    font-weight: 700;
-    max-width: 900px;
-  }
-  .sep {
-    opacity: .35;
-    font-weight: 600;
-  }
+.meta {
+  display: flex;
+  justify-content: center;
+  gap: 34px; /* veći razmak između elemenata */
+  align-items: center;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 24px 28px; /* veći unutrašnji razmak */
+  box-shadow: 0 6px 18px rgba(0,0,0,.06);
+  margin: 0 auto 26px;
+  font-size: clamp(2rem, 3.5vw, 2.8rem); /* još veće */
+  font-weight: 800; /* deblji font */
+  max-width: 1000px; /* širi kontejner */
+}
+.sep {
+  opacity: .35;
+  font-weight: 700;
+}
+
   /* Dugmad/akcije */
   .actions { margin-top: 24px; }
   button {
