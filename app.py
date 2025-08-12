@@ -76,7 +76,7 @@ def index():
     if start is None or end is None:
         poruka_html = "Danas je neradni dan."
         poruka_tts  = "Danas je neradni dan."
-        status_slika = "close.png"
+        status_slika = "close1.png"
     else:
         sat = sada.hour + sada.minute / 60
         otvoreno_sad = (start <= sat < end)
@@ -91,7 +91,7 @@ def index():
                 "Ordinacija je trenutno zatvorena.",
                 f"Danas je radno vrijeme od {sat_label(start)} do {sat_label(end)} časova."
             ]
-            status_slika = "close.png"
+            status_slika = "close1.png"
 
         poruka_html = "<br>".join(linije)
         poruka_tts  = " ".join(linije)
