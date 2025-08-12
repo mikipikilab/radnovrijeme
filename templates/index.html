@@ -6,16 +6,23 @@
 <script src="https://code.responsivevoice.org/responsivevoice.js?key=J55NcMXq"></script>
 <style>
   :root { color-scheme: light; }
-
 body {
   font-family: system-ui, Arial, sans-serif;
-  text-align: center;
   background: #f9fafb;
   color: #111827;
   margin: 0;
-  margin-top: 20%;
   padding: 24px;
+
+  /* Flex centriranje */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* vertikalno */
+  align-items: center;     /* horizontalno */
+
+  min-height: 100vh; /* cijela visina ekrana */
+  text-align: center;
 }
+
 
   /* LOGO */
   .logo {
