@@ -9,71 +9,78 @@
 
   body {
     font-family: system-ui, Arial, sans-serif;
-    text-align: center;         /* centriraj inline-block elemente */
+    text-align: center;
     background: #f9fafb;
     color: #111827;
     margin: 0;
     padding: 24px;
   }
 
-  /* LOGO — 100% širine containera, bez deformacije */
+  /* LOGO */
   .logo {
     display: inline-block;
     width: 100%;
     max-width: 100%;
     height: auto;
-    margin: 0 auto 16px;
+    margin: 0 auto 20px;
   }
 
   /* Glavna poruka */
   h1 {
-    font-size: clamp(2rem, 4vw, 2.6rem);  /* veće i responsivno */
-    margin: 0 0 10px;
+    font-size: clamp(2.5rem, 5vw, 3.5rem); /* VEĆE */
+    margin: 0 0 15px;
     color: #111827;
-    letter-spacing: .3px;
+    letter-spacing: .5px;
+    font-weight: 800;
   }
 
-  /* Podporuka ispod (uvećana i tamnija da se vidi) */
+  /* Podporuka */
   .sub {
     color: #374151;
-    margin-bottom: 18px;
-    line-height: 1.5;
-    font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+    margin-bottom: 24px;
+    line-height: 1.6;
+    font-size: clamp(1.4rem, 3vw, 2rem); /* VEĆE */
+    font-weight: 500;
   }
 
-  /* Meta podaci (datum, dan, vrijeme) — fleks, veći font */
+  /* Meta podaci */
   .meta {
     display: flex;
     justify-content: center;
-    gap: 22px;
+    gap: 26px;
     align-items: center;
     background: #fff;
     border: 1px solid #e5e7eb;
     border-radius: 12px;
-    padding: 14px 18px;
+    padding: 18px 22px;
     box-shadow: 0 6px 18px rgba(0,0,0,.06);
-    margin: 0 auto 18px;
-    font-size: clamp(1.1rem, 2.8vw, 1.6rem);
+    margin: 0 auto 22px;
+    font-size: clamp(1.4rem, 3vw, 2rem); /* VEĆE */
     font-weight: 700;
-    max-width: 900px; /* da ne bježi preširoko na velikim ekranima */
+    max-width: 900px;
   }
   .sep { opacity:.35; font-weight: 600; }
 
-  /* Akcije — veće dugme */
-  .actions { margin-top: 18px; }
+  /* Dugmad/akcije */
+  .actions { margin-top: 24px; }
   button {
-    padding: 14px 22px;
+    padding: 18px 28px; /* VEĆE */
     border-radius: 12px;
     border: 1px solid #d1d5db;
     background: #3b82f6;
     cursor: pointer;
-    font-size: 1.25rem;
+    font-size: 1.6rem; /* VEĆE */
     color: #fff;
-    font-weight: 700;
+    font-weight: 800;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   }
   button:hover { background: #2563eb; }
-  a { color: #2563eb; text-decoration: none; font-size: 1.1rem; font-weight: 700; }
+  a {
+    color: #2563eb;
+    text-decoration: none;
+    font-size: 1.4rem; /* VEĆE */
+    font-weight: 700;
+  }
   a:hover { text-decoration: underline; }
 </style>
 
